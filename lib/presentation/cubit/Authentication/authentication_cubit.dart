@@ -18,6 +18,17 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   AuthenticationCubit(this._register, this._login, this._create, this._update)
       : super(AuthenticationInitial());
 
+  void checkUser() {
+    emit(Authenticating());
+    bool isLoggedIn = globalSharedPreferences?.getString('email') != null;
+
+    if (isLoggedIn) {
+      emit(Authenticated());
+    } else {
+      emit(UnAuthenticated());
+    }
+  }
+
   void register(UserEntity user) async {
     emit(Authenticating());
     await _register(user);
