@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: CustomThemeData.themeData(),
       home: BlocProvider(
-        create: (context) => sl<AuthenticationCubit>(),
+        create: (context) => sl<AuthenticationCubit>()..checkUser(),
         child: const AuthManager(),
       ),
     );
