@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:lanuz_app/domain/usecase/update_coordinates.dart';
 import 'package:lanuz_app/presentation/cubit/Authentication/authentication_cubit.dart';
 
 import 'data/logic/remote_datasource.dart';
@@ -11,7 +12,8 @@ import 'domain/usecase/register_user.dart';
 final sl = GetIt.instance;
 
 Future init() async {
-  sl.registerFactory(() => AuthenticationCubit(sl(), sl(), sl()));
+  sl.registerFactory(() => AuthenticationCubit(sl(), sl(), sl(), sl()));
+  sl.registerLazySingleton(() => UpdateCoordinates(repo: sl()));
   sl.registerLazySingleton(() => RegisterUser(repo: sl()));
   sl.registerLazySingleton(() => LoginUser(repo: sl()));
   sl.registerLazySingleton(() => CreateTable(repo: sl()));

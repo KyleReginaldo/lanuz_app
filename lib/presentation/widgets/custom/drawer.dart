@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:general/widgets/text.dart';
+import 'package:lanuz_app/presentation/cubit/Authentication/authentication_cubit.dart';
 
 import '../../screens/main/edit_profile_screen.dart';
 import '../helper/helper_widget.dart';
@@ -70,7 +72,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const EditProfileScreen()));
+                            builder: (ctx) => const EditProfileScreen()));
                   },
                 ),
                 rowBuilder(
@@ -81,13 +83,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ],
             ),
           ),
-          rowBuilder(
-            'assets/image/logout.png',
-            'Logout',
-            () {
-              Navigator.pop(context);
-            },
-          )
+          rowBuilder('assets/image/logout.png', 'Logout', () {
+            context.read<AuthenticationCubit>().logout();
+          })
         ]));
   }
 }

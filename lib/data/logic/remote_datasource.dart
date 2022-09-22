@@ -7,6 +7,7 @@ abstract class RemoteDataSource {
   Future createTable();
   Future register(UserModel user);
   Future<bool> login(String email, String pword, Function function);
+  Future updateCoordinates(String coordinates);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -28,10 +29,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     try {
       var response = await http.post(Uri.http(ipv4, 'client/login.php'),
           body: {'email': email, 'pword': pword});
-      print(response.body);
+
       if (200 == response.statusCode) {
         var source = jsonDecode(response.body);
-        print('value: ${source['status']}');
+
         if (source['status']) {
           function;
         } else {
@@ -41,7 +42,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         return false;
       }
     } catch (e) {
-      print(e);
       return false;
     }
     return true;
@@ -56,7 +56,21 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         return response.body;
       }
     } catch (e) {
-      print('error in register (catch): $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future updateCoordinates(String coordinates) async {
+    try {
+      var response = await http.post(
+          Uri.http(ipv4, 'client/add_coordinate.php'),
+          body: {'coordinates': coordinates});
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {}
+    } catch (e) {
+      rethrow;
     }
   }
 }

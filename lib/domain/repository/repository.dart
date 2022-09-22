@@ -4,4 +4,5 @@ abstract class Repository {
   Future createTable();
   Future register(UserEntity user);
   Future<bool> login(String email, String pword, Function function);
+  Future updateCoordinates(String coordinates);
 }

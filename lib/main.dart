@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lanuz_app/presentation/cubit/Authentication/authentication_cubit.dart';
 import 'package:lanuz_app/presentation/screens/authentication/auth_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dependency_injection.dart';
 import 'core/theme/theme_data.dart';
 
+SharedPreferences? globalSharedPreferences;
+
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await init();
+  globalSharedPreferences = await SharedPreferences.getInstance();
   runApp(const MyApp());
 }
 

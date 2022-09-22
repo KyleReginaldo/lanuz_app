@@ -21,4 +21,9 @@ class RepositoryImpl implements Repository {
   Future<bool> login(String email, String pword, Function function) async {
     return await remote.login(email, pword, function);
   }
+
+  @override
+  Future updateCoordinates(String coordinates) async {
+    await remote.updateCoordinates(coordinates);
+  }
 }

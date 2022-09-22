@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:general/widgets/text.dart';
+import 'package:geolocator/geolocator.dart';
 
+import '../../../core/utils/constant.dart';
 import '../../../core/utils/desc_data.dart';
+import '../../../main.dart';
 import '../../widgets/components/modal_builder.dart';
 import '../../widgets/custom/clip_path_bg.dart';
 import '../../widgets/helper/helper_widget.dart';
+
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,6 +19,48 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // Future<void> getAddressFromLatLong(Position position) async {
+  //   List<Placemark> placemark =
+  //       await placemarkFromCoordinates(position.latitude, position.longitude);
+  // }
+
+  void _getCurrentLocation() async {
+    Position position = await _determinePosition();
+    // getAddressFromLatLong(position);
+    final coordinates = '${position.latitude},${position.longitude}';
+    final user = globalSharedPreferences!.getString('email');
+    print('User sharedpreferences email : $user');
+    updateCoordinates(
+        coordinates, globalSharedPreferences?.getString('email') ?? '');
+  }
+
+  Future<Position> _determinePosition() async {
+    LocationPermission permission;
+
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location Permissions are denied');
+      }
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Future updateCoordinates(String coordinates, String email) async {
+    try {
+      var response = await http.post(
+          Uri.http(ipv4, 'client/add_coordinate.php'),
+          body: {'coordinates': coordinates, 'email': email});
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {}
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -43,25 +90,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   size: 16,
                   weight: FontWeight.w300,
                 ),
-                Center(
-                  child: Container(
-                      margin: const EdgeInsets.all(30),
-                      padding: const EdgeInsets.all(20),
-                      height: 150,
-                      width: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(150),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.red, Colors.red.shade900],
+                GestureDetector(
+                  onTap: _getCurrentLocation,
+                  child: Center(
+                    child: Container(
+                        margin: const EdgeInsets.all(30),
+                        padding: const EdgeInsets.all(20),
+                        height: 150,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(150),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.red, Colors.red.shade900],
+                          ),
                         ),
-                      ),
-                      child: Image.asset(
-                        'assets/image/Emergency design button.png',
-                        width: 70,
-                        height: 70,
-                      )),
+                        child: Image.asset(
+                          'assets/image/Emergency design button.png',
+                          width: 70,
+                          height: 70,
+                        )),
+                  ),
                 ),
                 const CustomText(
                   'After pressing the alarm button\nit will automatically notify the rescuers',

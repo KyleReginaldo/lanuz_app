@@ -27,10 +27,10 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const AnnouncementScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBody: true,
         extendBodyBehindAppBar: true,
         drawer: const CustomDrawer(),
         appBar: AppBar(),
