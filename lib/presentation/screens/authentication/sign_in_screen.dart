@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:general/widgets/text.dart';
 import 'package:general/widgets/textfield.dart';
-import 'package:lanuz_app/main.dart';
 import 'package:lanuz_app/presentation/screens/authentication/sign_up_screen.dart';
 
 import '../../../core/theme/color.dart';
@@ -23,18 +22,9 @@ class _SignInScreenState extends State<SignInScreen> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
 
-  void checkLoginState() async {
-    final newuser = globalSharedPreferences!.getString('email');
-    if (newuser!.isNotEmpty) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (ctx) => const MainScreen()));
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    checkLoginState();
   }
 
   @override
@@ -100,7 +90,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     GestureDetector(
                       onTap: () {
                         final email = emailController.text;
-                        globalSharedPreferences?.setString('email', email);
+
                         context.read<AuthenticationCubit>().login(
                             emailController.text, passwordController.text, () {
                           Navigator.push(
